@@ -77,8 +77,7 @@ const handlers = {
   'AnswerIntent': function(){
     try{
       const currentIndex = this.attributes.currentQuestion;
-      const questionArr = questions;
-      const question = questionArr[currentIndex];
+      const question = questions[currentIndex];
       const answer = '';
       if(answer !== question.answer){
         this.attributes.score++;
