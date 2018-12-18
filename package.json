@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nikhil-bhandari/bose-quiz-lamda/issues"
   },
-  "homepage": "https://github.com/nikhil-bhandari/bose-quiz-lamda#readme"
+  "homepage": "https://github.com/nikhil-bhandari/bose-quiz-lamda#readme",
+  "dependencies": {
+    "alexa-sdk": "^1.0.25"
+  }
 }
