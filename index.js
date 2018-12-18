@@ -114,7 +114,7 @@ exports.handler = function (event, context, callback) {
 };
 
 function getPreQuestionText(currentIndex) {
-  return currentIndex === 0 ? `Welcome to Bose Quiz App. I'll ask you 5 questions, answer any 5 of them to win exciting prizes.\n` : `Ok, Moving on to Next Question. Here is your ${numberText[currentIndex]} question.`;
+  return currentIndex === 0 ? `Welcome to Bose Quiz App. I'll ask you 5 questions, answer any 5 of them to win exciting prizes. Here is your ${numberText[currentIndex]} question.\n` : `Ok, Moving on to Next Question. Here is your ${numberText[currentIndex]} question.`;
 }
 
 function getQuestionText(question) {
