@@ -22,20 +22,23 @@ const questions = [
   },
   {
     question: 'Which one of the BOSE speakers provide wall-to-wall stereo?',
-    options: ['Home Speaker 500',  'Soundbar 500', 'Soundbar 700', 'SoundLink Micro'],
+    options: ['Home Speaker 500', 'Soundbar 500', 'Soundbar 700', 'SoundLink Micro'],
     answer: 0
   },
   {
     question: 'How many virtual assistants do you get on Soundbar 700?',
-    options: ['3',  '2', '1', '4'],
+    options: ['3', '2', '1', '4'],
     answer: 1
   },
   {
     question: 'Which one of the soundbars is BOSE’s thinnest soundbar yet?',
-    options: ['Soundbar 300',  'Soundbar 500', 'Soundbar 700', 'Soundbar 100'],
+    options: ['Soundbar 300', 'Soundbar 500', 'Soundbar 700', 'Soundbar 100'],
     answer: 1
   }
 ];
+
+const optionsText = ['A: ', 'B: ', 'C: ', 'D: '];
+const number = ['first', 'second', 'third', 'fourth', 'last'];
 
 //=========================================================================================================================================
 //Editing anything below this line might break your skill.
@@ -48,47 +51,32 @@ const handlers = {
     this.emit('AskQuestion');
   },
   'AskQuestion': function () {
-
-    try{
+    try {
       const questionArr = questions;
       const currentIndex = this.attributes.currentQuestion;
       const question = questionArr[currentIndex];
-      const number = ['first', 'second', 'third', 'last'];
-
-
-      const optionsText = ['A: ', 'B: ', 'C: ', 'D: ']
-      const welcomeMessage = currentIndex === 0 ? `Welcome to Bose Quiz App. I'll ask you 5 questions, answer any 5 of them to win exciting prizes.\n` : 'Ok, Moving on to Next Question. ';
-
-      this.response.speak(`
-            ${welcomeMessage}Here is your ${number[currentIndex]} question.
-            
-            ${question.question}
-            
-            ${question.options.map((option, index) => `${optionsText[index]} ${option}`)}
-        `).listen("And your answer is?");
+      this.response.speak(`${getPreQuestionText(currentIndex)} ${getQuestionText(question)}`).listen("And your answer is?");
       this.emit(':responseReady');
-    }
-    catch(e){
+    } catch (e) {
       this.response.speak(e.toString());
       this.emit(':responseReady');
     }
-
   },
-  'AnswerIntent': function(){
-    try{
+  'AnswerIntent': function () {
+    try {
       const currentIndex = this.attributes.currentQuestion;
       const question = questions[currentIndex];
       const answer = '';
-      if(answer !== question.answer){
+      if (answer !== question.answer) {
         this.attributes.score++;
       }
 
       this.attributes.currentQuestion++;
 
-      if(this.attributes.currentQuestion < questions.length){
+      if (this.attributes.currentQuestion < questions.length) {
         this.response.speak('Ok, Do you want to continue').listen();
-      } else{
-        if(this.attributes.score < 5) {
+      } else {
+        if (this.attributes.score < 5) {
           this.response.speak(`Sorry, your score is less than 5. Better luck next time.`);
         } else {
           this.response.speak(`Congratulations! You won. Your score is 5. You must  have recieved an OTP on your mobile phone from the sender ABCD. Please confirm the OTP to continue.`)
@@ -96,7 +84,7 @@ const handlers = {
       }
       this.emit(':responseReady');
 
-    }catch(e){
+    } catch (e) {
       this.response.speak(e.toString());
       this.emit(':responseReady');
     }
@@ -124,3 +112,15 @@ exports.handler = function (event, context, callback) {
   alexa.registerHandlers(handlers);
   alexa.execute();
 };
+
+function getPreQuestionText(currentIndex) {
+  return currentIndex === 0 ? `Welcome to Bose Quiz App. I'll ask you 5 questions, answer any 5 of them to win exciting prizes.\n` : `Ok, Moving on to Next Question. Here is your ${numberText[currentIndex]} question.`;
+}
+
+function getQuestionText(question) {
+  return `${question.question} ${getOptionsText(question)}`;
+}
+
+function getOptionsText(question) {
+  return question.options.map((option, index) => `${optionsText[index]} ${option}`);
+}
