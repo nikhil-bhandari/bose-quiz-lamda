@@ -38,7 +38,7 @@ const questions = [
 ];
 
 const optionsText = ['A: ', 'B: ', 'C: ', 'D: '];
-const number = ['first', 'second', 'third', 'fourth', 'last'];
+const numberText = ['first', 'second', 'third', 'fourth', 'last'];
 
 //=========================================================================================================================================
 //Editing anything below this line might break your skill.
