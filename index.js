@@ -1,13 +1,8 @@
 'use strict';
 const Alexa = require('alexa-sdk');
 
-const APP_ID = undefined;
-
-const SKILL_NAME = 'Space Facts';
-const GET_FACT_MESSAGE = "Here's your fact: ";
-const HELP_MESSAGE = 'You can say tell me a space fact, or, you can say exit... What can I help you with?';
 const HELP_REPROMPT = 'What can I help you with?';
-const STOP_MESSAGE = 'Goodbye!';
+const STOP_MESSAGE = 'Thanks for playing, Bye!';
 
 const questions = [
   {
@@ -37,7 +32,7 @@ const questions = [
   }
 ];
 
-const optionsText = ['A: ', 'B: ', 'C: ', 'D: '];
+const optionsText = ['Option A: ', 'Option B: ', 'Option C: ', 'Option D: '];
 const numberText = ['first', 'second', 'third', 'fourth', 'last'];
 
 //=========================================================================================================================================
@@ -66,20 +61,22 @@ const handlers = {
     try {
       const currentIndex = this.attributes.currentQuestion;
       const question = questions[currentIndex];
-      const answer = '';
-      if (answer !== question.answer) {
+      const selectedAnswer = this.event.request.intent.slots.options.value;
+      const isCorrect = isCorrectAnswer(question, selectedAnswer);
+
+      if (isCorrect) {
         this.attributes.score++;
       }
 
       this.attributes.currentQuestion++;
 
       if (this.attributes.currentQuestion < questions.length) {
-        this.response.speak('Ok, Do you want to continue').listen();
+        this.response.speak(isCorrect ? `${selectedAnswer} is Correct. Do you want to continue?` : `${selectedAnswer} is incorrect. Do you want to continue?`).listen();
       } else {
         if (this.attributes.score < 5) {
-          this.response.speak(`Sorry, your score is less than 5. Better luck next time.`);
+          this.response.speak(`Sorry, your score is ${this.attributes.score}. Better luck next time.`);
         } else {
-          this.response.speak(`Congratulations! You won. Your score is 5. You must  have recieved an OTP on your mobile phone from the sender ABCD. Please confirm the OTP to continue.`)
+          this.response.speak(`Congratulations! You won. Your score is 5. You must  have received an OTP on your mobile phone from the sender ABCD. Please confirm the OTP to continue.`)
         }
       }
       this.emit(':responseReady');
@@ -114,13 +111,29 @@ exports.handler = function (event, context, callback) {
 };
 
 function getPreQuestionText(currentIndex) {
-  return currentIndex === 0 ? `Welcome to Bose Quiz App. I'll ask you 5 questions, answer any 5 of them to win exciting prizes. Here is your ${numberText[currentIndex]} question.\n` : `Ok, Moving on to Next Question. Here is your ${numberText[currentIndex]} question.`;
+  return currentIndex === 0 ? `Okay, Starting Quiz. I'll ask you 5 questions, answer all of them to win an exciting prize! Here is your ${numberText[currentIndex]} question.\n` : `Okay, Moving on to Next Question. Here is your ${numberText[currentIndex]} question.`;
 }
 
 function getQuestionText(question) {
-  return `${question.question} ${getOptionsText(question)}`;
+  return `${question.question} ${getOptionsText(question)} Which option do you think is correct?`;
 }
 
 function getOptionsText(question) {
-  return question.options.map((option, index) => `${optionsText[index]} ${option}`);
+  return question.options.map((option, index) => `${optionsText[index]} ${option}. `);
+}
+
+function isCorrectAnswer(question, selectedAnswer) {
+  return getSelectedIndex(selectedAnswer) === question.answer;
+}
+
+function getSelectedIndex(answer) {
+  if (['a', 'option a', 'A', 'option A', 'option A.'].indexOf(answer) > -1) {
+    return 0;
+  } else if (['b', 'option b', 'B', 'option B', 'option B.'].indexOf(answer) > -1) {
+    return 1;
+  } else if (['c', 'option c', 'C', 'option C', 'option C.'].indexOf(answer) > -1) {
+    return 2;
+  } else if (['d', 'option d', 'D', 'option D', 'option D.'].indexOf(answer) > -1) {
+    return 3;
+  }
 }
