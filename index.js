@@ -35,10 +35,6 @@ const questions = [
 const optionsText = ['Option A: ', 'Option B: ', 'Option C: ', 'Option D: '];
 const numberText = ['first', 'second', 'third', 'fourth', 'last'];
 
-//=========================================================================================================================================
-//Editing anything below this line might break your skill.
-//=========================================================================================================================================
-
 const handlers = {
   'LaunchRequest': function () {
     this.attributes.currentQuestion = 0;
@@ -105,7 +101,6 @@ const handlers = {
 
 exports.handler = function (event, context, callback) {
   const alexa = Alexa.handler(event, context, callback);
-  alexa.APP_ID = APP_ID;
   alexa.registerHandlers(handlers);
   alexa.execute();
 };
